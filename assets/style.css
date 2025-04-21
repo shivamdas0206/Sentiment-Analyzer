@@ -1,0 +1,23 @@
+/* .st-key-textinput input{
+    border : 3px solid white;
+    color: white;
+    border-radius:40px;
+    background-color: transparent;
+    
+} */
+
+.st-key-textinput input{
+    color: white;
+    border: 3px solid white;
+    color: white;
+    border-radius: 40px;
+    background-color: transparent; 
+    outline: none;
+    box-shadow: none;
+    transition: opacity 0.3s ease;
+}
+
+/* .st-key-textinput input:focus::placeholder {
+    opacity: 0;
+} */
+
