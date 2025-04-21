@@ -16,7 +16,21 @@ from streamlit_lottie import st_lottie
 import json
 import nltk
 
-
+# Download NLTK resources at the beginning before any imports that use them
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+    
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
+    
+try:
+    nltk.data.find('sentiment/vader_lexicon')
+except LookupError:
+    nltk.download('vader_lexicon')
 
 # Load Lottie JSON files
 def load_lottiefile(filepath: str):
@@ -60,26 +74,6 @@ with col2:
 # Load custom CSS file
 css_path = pathlib.Path("assets/style.css")
 load_css(css_path)
-
-# NLTK resources
-import nltk
-
-# Safe download of required NLTK data
-nltk_packages = ['punkt', 'stopwords', 'vader_lexicon']
-
-for pkg in nltk_packages:
-    try:
-        if pkg == 'punkt':
-            nltk.data.find('tokenizers/punkt')
-        elif pkg == 'vader_lexicon':
-            nltk.data.find('sentiment/vader_lexicon')
-        else:
-            nltk.data.find(f'corpora/{pkg}')
-    except LookupError:
-        nltk.download(pkg)
-
-nltk.download('stopwords')
-nltk.download('vader_lexicon')
 
 # Font styling
 st.markdown("""
@@ -138,8 +132,9 @@ st.markdown('<div class="center-input">', unsafe_allow_html=True)
 text = st.text_input(" ", placeholder="Enter text to analyze sentiment:\n", key="textinput")
 st.markdown('</div>', unsafe_allow_html=True)
 
-
-
+# Default to empty string if no text is entered
+if not text:
+    text = ""
 
 # Preprocessing
 lower_case = text.lower()
@@ -272,15 +267,18 @@ if sum(w.values()) > 0:
     <script>
         window.onload = function() {
             const sentimentLabel = document.getElementById('sentiment_label');
-            sentimentLabel.scrollIntoView({behavior: 'smooth'});
+            if (sentimentLabel) {
+                sentimentLabel.scrollIntoView({behavior: 'smooth'});
+            }
         };
     </script>
     """, height=0)
 else:
-    st.markdown(f"""
-    <div style='text-align: center; font-family: "Jersey 10", cursive"; font-size: 32px; color: white;' id="sentiment_label">
-        Overall Sentiment: <span style='color:{sentiment_color};'>{sentiment_label}</span>
-    </div>
-    """, unsafe_allow_html=True)
-    st_lottie(sentiment_lottie, height=300, key="overall_sentiment_only", speed=1)
-    st.write("Not enough emotional content to generate a pie chart.")
+    if text:  # Only show sentiment if text was entered
+        st.markdown(f"""
+        <div style='text-align: center; font-family: "Jersey 10", cursive"; font-size: 32px; color: white;' id="sentiment_label">
+            Overall Sentiment: <span style='color:{sentiment_color};'>{sentiment_label}</span>
+        </div>
+        """, unsafe_allow_html=True)
+        st_lottie(sentiment_lottie, height=300, key="overall_sentiment_only", speed=1)
+        st.write("Not enough emotional content to generate a pie chart.")
