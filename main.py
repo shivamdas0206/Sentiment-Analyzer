@@ -1,6 +1,19 @@
 import string
 import streamlit as st
 from collections import Counter 
+import nltk
+
+# Explicitly download punkt_tab
+try:
+    nltk.download('punkt_tab')
+except:
+    nltk.download('punkt')
+
+# Download other required NLTK resources
+nltk.download('stopwords')
+nltk.download('vader_lexicon')
+
+# Now import the NLTK modules after downloading resources
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -14,23 +27,6 @@ import plotly.graph_objects as go
 import plotly.express as px
 from streamlit_lottie import st_lottie
 import json
-import nltk
-
-# Download NLTK resources at the beginning before any imports that use them
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-    
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords')
-    
-try:
-    nltk.data.find('sentiment/vader_lexicon')
-except LookupError:
-    nltk.download('vader_lexicon')
 
 # Load Lottie JSON files
 def load_lottiefile(filepath: str):
@@ -139,7 +135,9 @@ if not text:
 # Preprocessing
 lower_case = text.lower()
 cleaned_text = lower_case.translate(str.maketrans('', '', string.punctuation))
-tokenized_words = word_tokenize(cleaned_text, "english")
+
+# Use word_tokenize with default language (English)
+tokenized_words = word_tokenize(cleaned_text)
 final_words = [word for word in tokenized_words if word not in stopwords.words('english')]
 
 # Emotion extraction
