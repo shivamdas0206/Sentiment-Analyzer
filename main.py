@@ -16,16 +16,6 @@ from streamlit_lottie import st_lottie
 import json
 import nltk
 
-nltk_packages = ['punkt', 'stopwords', 'vader_lexicon']
-
-for package in nltk_packages:
-    try:
-        if package == 'punkt':
-            nltk.data.find('tokenizers/punkt')
-        else:
-            nltk.data.find(f'corpora/{package}')
-    except LookupError:
-        nltk.download(package)
 
 
 # Load Lottie JSON files
