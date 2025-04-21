@@ -1,0 +1,8 @@
+streamlit
+nltk
+plotly
+pandas
+numpy
+Pillow
+streamlit-lottie
+
